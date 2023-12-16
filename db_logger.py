@@ -78,8 +78,6 @@ class DbLogger:
     def save_motor_command(self,command_id:int):
         for motor_name,motor in self.json_data.items():
             self.cursor.execute("INSERT INTO motor_command (command_id,motor_id,direction_id,speed) VALUES (?,?,?,?);",(command_id,self.save_motor(motor_name),self.save_direction(motor['direction']),motor['speed']))
-
-    
         
     def close(self):
         self.mqtt.close()

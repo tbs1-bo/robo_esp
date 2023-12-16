@@ -49,7 +49,4 @@ CREATE TABLE motor_command (
     FOREIGN KEY (direction_id) REFERENCES direction(direction_id)
 );
 
-INSERT INTO direction (name) VALUES ('forward'), ('backward');
-INSERT INTO motor (name) VALUES ('left'), ('right');
-INSERT INTO robot (name) VALUES ('rob_trottmann');
 
