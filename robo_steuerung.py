@@ -1,11 +1,11 @@
 import pygame
 import time
-import confing
+import config
 from mqtt import MqttPublisher
 
 class RoboSteuerung:
     def __init__(self):
-        self.mqtt = MqttPublisher(confing.BROKER, confing.PORT)
+        self.mqtt = MqttPublisher(config.BROKER, config.PORT)
         pygame.init()
         self.running = True
 
