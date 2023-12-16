@@ -1,7 +1,7 @@
 # The name of the robot
 ROBO_NAME = 'rob_trottmann'
 # Settings for connecting the client to the broker
-BROKER = "luc-pi.local"
+BROKER = "192.168.1.213"
 PORT = 1883
 # topic for controlling the robot
 TOPIC_ROBO_MOVEMENT = f'robos/{ROBO_NAME}/movement'

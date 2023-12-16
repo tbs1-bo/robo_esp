@@ -6,9 +6,9 @@ import json
 
 class RoboFirmware:
     def __init__(self):
-        self.mqtt = MqttSubscriber(config.BROKER, config.PORT, config.TOPIC_ROBO_MOVEMENT)
-        self.motor_left = Motor(config.PIN_FORWARD_MOTOR_LEFT, config.PIN_BACKWARD_MOTOR_LEFT, config.PIN_ENABLE_MOTOR_LEFT)
-        self.motor_right = Motor(config.PIN_FORWARD_MOTOR_RIGHT, config.PIN_BACKWARD_MOTOR_RIGHT, config.PIN_ENABLE_MOTOR_RIGHT)
+        self.mqtt = MqttSubscriber(config.BROKER, config.PORT)
+        self.motor_left = Motor(config.PIN_FORWARD_MOTOR_LEFT, config.PIN_BACKWARD_MOTOR_LEFT, enable=config.PIN_ENABLE_MOTOR_LEFT)
+        self.motor_right = Motor(config.PIN_FORWARD_MOTOR_RIGHT, config.PIN_BACKWARD_MOTOR_RIGHT, enable=config.PIN_ENABLE_MOTOR_RIGHT)
         self.mqtt.change_callback(self.on_message)
         self.mqtt.subscribe(config.TOPIC_ROBO_MOVEMENT)
 
