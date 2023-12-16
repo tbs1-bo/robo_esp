@@ -12,6 +12,10 @@ class RoboSteuerung:
         self.running = True
         self.x = 1000
         self.y = 1000
+        self.lpressed=False
+        self.rpressed=False
+        self.fpressed=False
+        self.bpressed=False
 
     def run(self):
         screen = pygame.display.set_mode((400, 400))
@@ -29,10 +33,47 @@ class RoboSteuerung:
                     #escape:
                     if event.key == pygame.K_ESCAPE:
                         self.running = False
-            
-            x, y = pygame.mouse.get_rel() # get mouse movement since last call
+                    elif event.key == pygame.K_UP:
+                        print("up pressed")
+                        self.fpressed=True
+                    elif event.key == pygame.K_DOWN:
+                        self.bpressed=True
+                        print("down pressed")
+                    elif event.key == pygame.K_LEFT:
+                        self.lpressed=True
+                        print("left pressed")
+                    elif event.key == pygame.K_RIGHT:
+                        self.rpressed=True
+                        print("right pressed")
+                elif event.type == pygame.KEYUP:
+                    if event.key == pygame.K_UP:
+                        self.fpressed=False
+                        print("up released")
+                    elif event.key == pygame.K_DOWN:
+                        self.bpressed=False
+                        print("down released")
+                    elif event.key == pygame.K_LEFT:
+                        self.lpressed=False
+                        print("left released")
+                    elif event.key == pygame.K_RIGHT:
+                        self.rpressed=False
+                        print("right released")
+            y=0
+            x=0
+            if self.fpressed:
+                y-=100
+            if self.bpressed:
+                y+=100
+            if self.lpressed:
+                x-=100
+            if self.rpressed:
+                x+=100
+
+            if not self.fpressed and not self.bpressed and not self.lpressed and not self.rpressed: 
+                x, y = pygame.mouse.get_rel() # get mouse movement since last call
             pygame.mouse.set_pos((200, 200))
             #print(x, y)
+            y=-y
             self.send_mqtt(x, y)
             pygame.display.flip()  
         pygame.event.set_grab(False)
@@ -41,7 +82,46 @@ class RoboSteuerung:
         self.mqtt.close()
     
     def calc_to_motor(self, x, y):
-        pass
+        print(x,y)
+        if y==0:
+            if x<0:
+                ldir="backward"
+                rdir="forward"
+                x=abs(x)
+            else:
+                ldir="forward"
+                rdir="backward"
+            left=x
+            right=x
+        else:
+            if y<0:
+                ldir="backward"
+                rdir="backward"
+            else:
+                ldir="forward"
+                rdir="forward"
+            left=(((50+x/2)/100))*abs(y)
+            right=(((50-x/2)/100))*abs(y)
+            right=round(right)
+            left=round(left)
+            if (left+right)!=0:
+                if left>=right:
+                    #print(f"left: {left} right: {right}")
+                    
+                    
+                    right=(right/left)*abs(y)
+                    left=abs(y)
+                    #print(f"right/left: {(right/left)}")
+                    #print(f"After left: {left} right: {right}")
+                else:
+                    
+                    left=(left/right)*abs(y)
+                    right=abs(y)
+                
+            right=round(right)
+            left=round(left)
+    
+        return {"direction":ldir,"speed":left},{"direction":rdir,"speed":right}
     
     def send_mqtt(self, x, y,force=False):
         if x!=0:
@@ -51,7 +131,8 @@ class RoboSteuerung:
         if (x!=self.x or y!=self.y) or force:
             self.x=x
             self.y=y
-            print(x, y)
+            print(self.calc_to_motor(x, y))
+            #print(x,y)
 
             
 if __name__ == '__main__':
