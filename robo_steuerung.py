@@ -82,7 +82,7 @@ class RoboSteuerung:
         self.mqtt.close()
     
     def calc_to_motor(self, x, y):
-        print(x,y)
+        #print(x,y)
         if y==0:
             if x<0:
                 ldir="backward"
@@ -131,8 +131,11 @@ class RoboSteuerung:
         if (x!=self.x or y!=self.y) or force:
             self.x=x
             self.y=y
-            print(self.calc_to_motor(x, y))
-            #print(x,y)
+            data=self.calc_to_motor(x, y)
+            #should be converted to json: { "motor_left": { "direction": "forward", "speed": 50 }, "motor_right": { "direction": "backward", "speed": 30 } }
+            json_data=json.dumps({"motor_left":data[0],"motor_right":data[1]})
+            print(json_data)
+            self.mqtt.publish(config.TOPIC_ROBO_MOVEMENT, json_data)
 
             
 if __name__ == '__main__':

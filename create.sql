@@ -1,3 +1,8 @@
+PRAGMA writable_schema = 1;
+DELETE FROM sqlite_master WHERE TRUE ;
+PRAGMA writable_schema = 0;
+VACUUM;
+PRAGMA integrity_check;
 -- Create direction table
 CREATE TABLE direction (
     direction_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
