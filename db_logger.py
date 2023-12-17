@@ -5,13 +5,13 @@ from mqtt import MqttSubscriber
 import time
 
 class DbLogger:
-    def __init__(self,dbname:str) -> None:
+    def __init__(self,dbname:str,topic:str) -> None:
         self.dbname=dbname
         self.conn = sqlite3.connect(self.dbname,check_same_thread=False)
         self.cursor = self.conn.cursor()
         self.mqtt = MqttSubscriber(config.BROKER, config.PORT)
         self.mqtt.change_callback(self.on_message)
-        self.mqtt.subscribe(config.TOPIC_ROBO_MOVEMENT)
+        self.mqtt.subscribe(topic)
         self.json_data = None
 
     
@@ -86,7 +86,7 @@ class DbLogger:
         self.conn.close()
 
 if __name__ == '__main__':
-    db_logger = DbLogger("db.db")
+    db_logger = DbLogger("db.db","robot/+/movement")
     input("Press Enter to continue...")
     db_logger.close()
 
