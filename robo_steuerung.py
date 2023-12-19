@@ -82,6 +82,7 @@ class RoboSteuerung:
         self.mqtt.close()
     
     def calc_to_motor(self, x, y):
+        
         #print(x,y)
         if y==0:
             if x<0:
@@ -120,6 +121,15 @@ class RoboSteuerung:
                 
             right=round(right)
             left=round(left)
+            if left>100:
+                left=100
+            elif left<0:
+                left=0
+            if right>100:
+                right=100
+            elif right<0:
+                right=0
+
     
         return {"direction":ldir,"speed":left},{"direction":rdir,"speed":right}
     
