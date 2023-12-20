@@ -61,13 +61,13 @@ class RoboSteuerung:
             y=0
             x=0
             if self.fpressed:
-                y-=100
+                y-=int(200*config.SPEED/100)
             if self.bpressed:
-                y+=100
+                y+=int(200*config.SPEED/100)
             if self.lpressed:
-                x-=100
+                x-=int(200*config.SPEED/100)
             if self.rpressed:
-                x+=100
+                x+=int(200*config.SPEED/100)
 
             if not self.fpressed and not self.bpressed and not self.lpressed and not self.rpressed: 
                 x, y = pygame.mouse.get_rel() # get mouse movement since last call
@@ -121,6 +121,8 @@ class RoboSteuerung:
                 
             right=round(right)
             left=round(left)
+            if right>0:
+                right+=12
             if left>100:
                 left=100
             elif left<0:
