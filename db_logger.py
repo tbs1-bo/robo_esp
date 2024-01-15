@@ -16,6 +16,7 @@ class DbLogger:
 
     
     def on_message(self, client, userdata, msg):
+        #print("message received from ",msg.topic)
         self.json_data = json.loads(msg.payload)
         json_id=self.save_raw_data()
         robot_id=self.save_robot(msg.topic.split("/")[1])
@@ -86,7 +87,7 @@ class DbLogger:
         self.conn.close()
 
 if __name__ == '__main__':
-    db_logger = DbLogger("db.db","robot/+/movement")
+    db_logger = DbLogger("db.db","robos/+/movement")
     input("Press Enter to continue...")
     db_logger.close()
 
