@@ -9,6 +9,9 @@ class RoboSteuerung:
     def __init__(self):
         self.mqtt = MqttPublisher(config.BROKER, config.PORT)
         pygame.init()
+        pygame.joystick.init()
+        self.joystick = pygame.joystick.Joystick(0)
+        self.joystick.init()
         self.running = True
         self.x = 1000
         self.y = 1000
@@ -66,6 +69,40 @@ class RoboSteuerung:
                     elif event.key == pygame.K_RIGHT:
                         self.rpressed=False
                         print("right released")
+                elif event.type == pygame.JOYBUTTONDOWN:
+                    if event.button==5:
+                        config.SPEED+=5
+                    elif event.button==4:
+                        config.SPEED-=5
+                    if config.SPEED<0:
+                        config.SPEED=0
+                    elif config.SPEED>100:
+                        config.SPEED=100
+                    print(f"speed: {config.SPEED}")
+                    
+                
+                elif event.type == pygame.JOYAXISMOTION:
+                    #print("Joystick axis moved.")
+                    ax=int(event.axis)
+                    val=int(event.value)
+                    if ax==0:
+                        if val>0:
+                            self.rpressed=True
+                        elif val<0:
+                            self.lpressed=True
+                        elif val==0:
+                            self.rpressed=False
+                            self.lpressed=False
+                    elif ax==1:
+                        if val>0:
+                            self.fpressed=False
+                            self.bpressed=True
+                        elif val<0:
+                            self.fpressed=True
+                            self.bpressed=False
+                        elif val==0:
+                            self.fpressed=False
+                            self.bpressed=False
             y=0
             x=0
             if self.fpressed:
